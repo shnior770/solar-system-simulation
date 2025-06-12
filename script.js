@@ -44,11 +44,17 @@ function createPlanet(size, texture, position, ring) {
     obj.add(mesh); // הוסף את הכוכב לאובייקט הריק
 
     // קו מסלול (לבן)
-    const orbitGeometry = new THREE.TorusGeometry(position, 0.005, 16, 100); // רדיוס, עובי
-    const orbitMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF }); // לבן
-    const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
-    orbit.rotation.x = Math.PI / 2; // סובב את הטבעת כך שתהיה מישורית
-    obj.add(orbit); // הוסף את המסלול לאובייקט הריק
+const orbitGeometry = new THREE.TorusGeometry(position, 0.005, 16, 100);
+const orbitMaterial = new THREE.MeshBasicMaterial({
+    color: 0xFFFFFF, // וודא צבע לבן
+    transparent: false, // וודא שאין שקיפות
+    opacity: 1,         // וודא אטימות מלאה
+    depthWrite: true,   // חשוב: מאפשר כתיבה ל-depth buffer
+    depthTest: true     // חשוב: מאפשר בדיקת עומק
+});
+const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
+orbit.rotation.x = Math.PI / 2;
+obj.add(orbit);
 
     // מיקום כוכב הלכת על המסלול ההתחלתי שלו
     mesh.position.set(position, 0, 0); // ממוקם על ציר ה-X, במרחק ה-position
@@ -149,8 +155,8 @@ planetsData.forEach(data => {
 
 // מיקום מצלמה
 // ממוקם גבוה יותר ומסתכל על מרכז מערכת השמש
-camera.position.set(0, 200, 200); // X, Y, Z
-camera.lookAt(0, 0, 0);
+camera.position.set(0, 300, 0.1); // ממוקם ישירות מעל (Y=300), ו-Z=0.1 כדי למנוע Z-fighting עם מישור ה-XY
+camera.lookAt(0, 0, 0);          // ממשיכה להסתכל על מרכז הסצנה
 
 
 // --- פונקציית אנימציה ---
